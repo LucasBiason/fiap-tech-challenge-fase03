@@ -8,14 +8,14 @@ import json
 import re
 from tqdm import tqdm
 from typing import Dict, Any, Optional, List
-from config import Config
+from .config import ConfigDataPreparation
 
 
 class DataProcessor:
     """Processes and cleans dataset for fine-tuning."""
 
     def __init__(self, input_path: str, output_path: str,
-                 config: Optional[Config] = Config()):
+        config: Optional[ConfigDataPreparation] = ConfigDataPreparation()):
         """
         Initialize processor with input and output paths.
 
@@ -300,7 +300,7 @@ class DataProcessor:
 
 
 def process_dataset(input_path: str, output_path: str,
-                    config: Optional[Config] = None) -> bool:
+                    config: Optional[ConfigDataPreparation] = None) -> bool:
     """
     Convenience function to process dataset.
 
@@ -313,7 +313,7 @@ def process_dataset(input_path: str, output_path: str,
         bool: True if successful
     """
     if config is None:
-        config = Config()
+        config = ConfigDataPreparation()
 
     processor = DataProcessor(input_path, output_path, config)
     return processor.process_dataset()
