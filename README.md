@@ -39,7 +39,23 @@ fiap-tech-challenge-fase03/
 # Ele baixa, analisa e processa o dataset automaticamente
 ```
 
-### 2. Fine-Tuning
+### 2. Teste Funcional Rápido (RECOMENDADO)
+
+Se o treinamento está demorando muito (20+ horas), use o teste funcional:
+
+```bash
+# Parar treinamento atual e executar teste rápido
+python stop_and_test.py
+```
+
+**O que o teste faz:**
+- Para qualquer treinamento em andamento
+- Cria amostra de apenas 1000 registros
+- Configura para 1 época apenas
+- Tempo estimado: 5-15 minutos
+- Valida se o sistema está funcionando
+
+### 3. Fine-Tuning Completo
 
 ```python
 from fine_tuning.config import FineTuningConfig
@@ -54,6 +70,13 @@ config = FineTuningConfig.create_default(
 # Executar treinamento
 trainer = FineTuningTrainer(config)
 success = trainer.run_full_pipeline()
+```
+
+### 4. Criação Manual de Amostra
+
+```bash
+# Criar amostra pequena manualmente
+python create_sample.py -i ./data/trn_finetune.jsonl -o ./data/trn_finetune_sample.jsonl -s 1000
 ```
 
 ## Detecção Automática de Modelo

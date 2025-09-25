@@ -335,6 +335,49 @@ class FineTuningTrainer:
         except Exception as e:
             self.logger.error(f"Erro ao salvar modelo: {e}")
     
+    def generate_text(self, prompt: str, max_length: int = 100) -> str:
+        """
+        Gera texto usando o modelo treinado.
+        
+        Args:
+            prompt: Texto de entrada
+            max_length: Comprimento máximo da resposta
+            
+        Returns:
+            str: Texto gerado pelo modelo
+        """
+        try:
+            if self.model is None or self.tokenizer is None:
+                self.logger.error("Modelo não foi carregado! Execute setup_model() primeiro.")
+                return "Erro: Modelo não carregado"
+            
+            # Tokenizar entrada
+            inputs = self.tokenizer.encode(prompt, return_tensors="pt")
+            
+            # Gerar texto
+            with torch.no_grad():
+                outputs = self.model.generate(
+                    inputs,
+                    max_length=max_length,
+                    num_return_sequences=1,
+                    temperature=0.7,
+                    do_sample=True,
+                    pad_token_id=self.tokenizer.eos_token_id
+                )
+            
+            # Decodificar resposta
+            response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            
+            # Remover o prompt da resposta
+            if response.startswith(prompt):
+                response = response[len(prompt):].strip()
+            
+            return response
+            
+        except Exception as e:
+            self.logger.error(f"Erro durante geração de texto: {e}")
+            return f"Erro: {str(e)}"
+    
     def run_full_pipeline(self) -> bool:
         """
         Executa pipeline completo de fine-tuning.
